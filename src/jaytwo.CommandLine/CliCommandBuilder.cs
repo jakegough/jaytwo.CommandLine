@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using jaytwo.CommandLine.ArgumentSafety;
 using jaytwo.CommandLine.Runtime;
 
 namespace jaytwo.CommandLine
@@ -16,11 +17,12 @@ namespace jaytwo.CommandLine
         {
             RuntimeInfo = runtimeInfo;
             EnvironmentVariables = new Dictionary<string, string>();
+            Arguments = new CliArgumentsBuilder(runtimeInfo);
         }
 
         public RuntimeInformation RuntimeInfo { get; }
 
-        public string Arguments { get; set; }
+        public CliArgumentsBuilder Arguments { get; set; }
 
         public IDictionary<string, string> EnvironmentVariables { get; }
 
@@ -46,7 +48,7 @@ namespace jaytwo.CommandLine
 
         public CliCommandBuilder AppendRawArguments(string argument)
         {
-            Arguments += argument;
+            Arguments.AppendRaw(argument);
             return this;
         }
 
@@ -54,6 +56,18 @@ namespace jaytwo.CommandLine
         {
             var formatted = string.Format(format, args);
             return AppendRawArguments(formatted);
+        }
+
+        public CliCommandBuilder AppendArgument(string argument)
+        {
+            Arguments.Append(argument);
+            return this;
+        }
+
+        public CliCommandBuilder AppendArgument(string format, params object[] args)
+        {
+            var formatted = string.Format(format, args);
+            return AppendArgument(formatted);
         }
 
         public CliCommandBuilder WithExpectedExitCode(int expectedExitCode)
