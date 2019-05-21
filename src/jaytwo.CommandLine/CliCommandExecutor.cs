@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using jaytwo.CommandLine.Exceptions;
+using jaytwo.CommandLine.Shim;
 
 namespace jaytwo.CommandLine
 {
@@ -39,7 +40,7 @@ namespace jaytwo.CommandLine
 
             processStartInfo.WorkingDirectory = command.WorkingDirectory;
             processStartInfo.FileName = command.FileName;
-            processStartInfo.Arguments = command.Arguments;
+            processStartInfo.Arguments = GetInlineArguments(command.Arguments);
 
             var standardOutputBuilder = new StringBuilder();
             var standardErrorBuilder = new StringBuilder();
@@ -107,6 +108,21 @@ namespace jaytwo.CommandLine
             }
 
             return result;
+        }
+
+        private static string GetInlineArguments(IList<string> argumentList)
+        {
+            var stringBuilder = new StringBuilder();
+
+            if (argumentList != null && argumentList.Count > 0)
+            {
+                foreach (string argument in argumentList)
+                {
+                    PasteArguments.AppendArgument(stringBuilder, argument);
+                }
+            }
+
+            return stringBuilder.ToString();
         }
     }
 }

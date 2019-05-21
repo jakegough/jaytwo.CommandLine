@@ -32,7 +32,7 @@ namespace jaytwo.CommandLine.UnitTests.Process
             // arrange
             var command = new CliCommandBuilder()
                 .WithFileName("node")
-                .AppendRawArguments("-e process.exit({0})", exitCode)
+                .WithArguments("-e", $"process.exit({exitCode})")
                 .WithExpectedExitCodes(exitCode)
                 .GetCommand();
 
@@ -57,7 +57,8 @@ namespace jaytwo.CommandLine.UnitTests.Process
 
             var command = new CliCommandBuilder()
                 .WithFileName("node")
-                .AppendRawArguments("-e \"console.log('{0}')\"", message)
+                .WithArgument("-e")
+                .WithArgument("console.log('{0}')", message)
                 .GetCommand();
 
             // act
@@ -74,6 +75,46 @@ namespace jaytwo.CommandLine.UnitTests.Process
             Assert.Empty(result.StandardError?.Trim());
         }
 
+        [Theory]
+        [InlineData("abc", null)]
+        [InlineData("abc def", null)]
+        [InlineData("abc\"def", null)]
+        [InlineData("abc'def", null)]
+        [InlineData(@"abc\def", null)]
+        [InlineData("abc\ndef", "abc[newline]def")]
+        [InlineData("abc\rdef", "abc[newline]def")]
+        [InlineData("`-=~!@#$%^&*()_+", null)]
+        [InlineData("[];,./{}|:<>?", null)]
+        public async Task Cli_arguments_work_with_special_characters(string message, string expectedOutput)
+        {
+            // arrange
+            var messageReadyForConsoleLog = message
+                .Replace("\\", "\\\\") // slashes first so we don't redo them as part of escaping quotes or newlines
+                .Replace("'", @"\'") // because we're already inside single quotes
+                .Replace("\n", @"\n") // we have to pass newlines as strings to be evaluated inside the quotes
+                .Replace("\r", @"\r");
+
+            var command = new CliCommandBuilder()
+                .WithFileName("node")
+                .WithArgument("-e")
+                .WithArgument("console.log('{0}')", messageReadyForConsoleLog)
+                .GetCommand();
+
+            // (log)
+            _output.WriteLine("Command: {0}", command);
+
+            // act
+            var result = await _cli.RunCommandAsync(command);
+
+            // (log)
+            _output.WriteLine("StandardOutput: {0}", result.StandardOutput?.Trim());
+
+            // assert
+            expectedOutput = expectedOutput?.Replace("[newline]", Environment.NewLine);
+
+            Assert.Equal(expectedOutput ?? message, result.StandardOutput?.Trim());
+        }
+
         [Fact]
         public async Task Cli_processes_input_arguments_and_captures_standard_error()
         {
@@ -82,7 +123,8 @@ namespace jaytwo.CommandLine.UnitTests.Process
 
             var command = new CliCommandBuilder()
                 .WithFileName("node")
-                .AppendRawArguments("-e \"console.error('{0}')\"", message)
+                .WithArgument("-e")
+                .WithArgument("console.error('{0}')", message)
                 .GetCommand();
 
             // act
@@ -107,7 +149,8 @@ namespace jaytwo.CommandLine.UnitTests.Process
             // arrange
             var command = new CliCommandBuilder()
                 .WithFileName("node")
-                .AppendRawArguments("-e \"setTimeout(function() {{ console.log('exiting as scheduled...'); process.exit(123); }}, {0});\"", sleepSeconds)
+                .WithArgument("-e")
+                .WithArgument("setTimeout(function() {{ console.log('exiting as scheduled...'); process.exit(123); }}, {0});", sleepSeconds)
                 .WithTimeout(TimeSpan.FromMilliseconds(timeoutSeconds))
                 .GetCommand();
 

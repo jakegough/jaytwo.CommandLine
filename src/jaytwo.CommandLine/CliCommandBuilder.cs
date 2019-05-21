@@ -20,7 +20,7 @@ namespace jaytwo.CommandLine
 
         public RuntimeInformation RuntimeInfo { get; }
 
-        public string Arguments { get; set; }
+        public IList<string> Arguments { get; set; } = new List<string>();
 
         public IDictionary<string, string> EnvironmentVariables { get; }
 
@@ -44,16 +44,26 @@ namespace jaytwo.CommandLine
             return this;
         }
 
-        public CliCommandBuilder AppendRawArguments(string argument)
+        public CliCommandBuilder WithArguments(params string[] arguments)
         {
-            Arguments += argument;
+            foreach (var argument in arguments)
+            {
+                WithArgument(argument);
+            }
+
             return this;
         }
 
-        public CliCommandBuilder AppendRawArguments(string format, params object[] args)
+        public CliCommandBuilder WithArgument(string argument)
+        {
+            Arguments.Add(argument);
+            return this;
+        }
+
+        public CliCommandBuilder WithArgument(string format, params object[] args)
         {
             var formatted = string.Format(format, args);
-            return AppendRawArguments(formatted);
+            return WithArgument(formatted);
         }
 
         public CliCommandBuilder WithExpectedExitCode(int expectedExitCode)
@@ -107,10 +117,14 @@ namespace jaytwo.CommandLine
             {
                 FileName = FileName,
                 WorkingDirectory = WorkingDirectory,
-                Arguments = Arguments.ToString(),
                 Timeout = Timeout,
                 ExpectedExitCodes = ExpectedExitCodes?.ToArray(),
             };
+
+            foreach (var argument in Arguments)
+            {
+                result.Arguments.Add(argument);
+            }
 
             foreach (var environmentVariable in EnvironmentVariables)
             {

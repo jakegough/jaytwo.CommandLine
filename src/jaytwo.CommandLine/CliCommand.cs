@@ -6,7 +6,7 @@ namespace jaytwo.CommandLine
 {
     public class CliCommand
     {
-        public string Arguments { get; set; }
+        public IList<string> Arguments { get; } = new List<string>();
 
         public IDictionary<string, string> Environment { get; } = new Dictionary<string, string>();
 
