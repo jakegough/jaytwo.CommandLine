@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using jaytwo.CommandLine.Runtime;
+using System.Text;
+using jaytwo.Subprocess.Runtime;
+using jaytwo.Subprocess.Shim;
 
-namespace jaytwo.CommandLine
+namespace jaytwo.Subprocess
 {
     public class CliCommandBuilder
     {
@@ -116,15 +118,11 @@ namespace jaytwo.CommandLine
             var result = new CliCommand()
             {
                 FileName = FileName,
+                Arguments = GetInlineArguments(Arguments),
                 WorkingDirectory = WorkingDirectory,
                 Timeout = Timeout,
                 ExpectedExitCodes = ExpectedExitCodes?.ToArray(),
             };
-
-            foreach (var argument in Arguments)
-            {
-                result.Arguments.Add(argument);
-            }
 
             foreach (var environmentVariable in EnvironmentVariables)
             {
@@ -132,6 +130,26 @@ namespace jaytwo.CommandLine
             }
 
             return result;
+        }
+
+        public override string ToString()
+        {
+            return GetCommand().ToString();
+        }
+
+        private static string GetInlineArguments(IList<string> argumentList)
+        {
+            var stringBuilder = new StringBuilder();
+
+            if (argumentList != null && argumentList.Count > 0)
+            {
+                foreach (string argument in argumentList)
+                {
+                    PasteArguments.AppendArgument(stringBuilder, argument);
+                }
+            }
+
+            return stringBuilder.ToString();
         }
     }
 }

@@ -2,16 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace jaytwo.CommandLine.Exceptions
+namespace jaytwo.Subprocess.Exceptions
 {
-    public class UnexpectedExitCodeException : CommandLineException
+    public class UnexpectedExitCodeException : SubprocessException
     {
-        public UnexpectedExitCodeException(CliResult result)
+        public UnexpectedExitCodeException(CliCommandResult result)
             : base(result, GetMessage(result))
         {
         }
 
-        private static string GetMessage(CliResult result)
+        private static string GetMessage(CliCommandResult result)
         {
             return $"Unexpected Exit Code: {result.ExitCode}\n\nStandard Error: {result.StandardError}\n\nStandard Output: {result.StandardOutput}";
         }

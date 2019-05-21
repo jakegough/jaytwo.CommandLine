@@ -7,9 +7,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{12E34E1B-F2D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{5F725C1D-5297-4DB3-A5D2-70DB34C0464C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "jaytwo.CommandLine", "src\jaytwo.CommandLine\jaytwo.CommandLine.csproj", "{77C486BA-CECA-4321-84BD-FC571E32A194}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "jaytwo.Subprocess", "src\jaytwo.Subprocess\jaytwo.Subprocess.csproj", "{77C486BA-CECA-4321-84BD-FC571E32A194}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "jaytwo.CommandLine.UnitTests", "test\jaytwo.CommandLine.UnitTests\jaytwo.CommandLine.UnitTests.csproj", "{ABC8BB42-E316-4921-9308-3B8C7FC958E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "jaytwo.Subprocess.UnitTests", "test\jaytwo.Subprocess.UnitTests\jaytwo.Subprocess.UnitTests.csproj", "{ABC8BB42-E316-4921-9308-3B8C7FC958E5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4032478E-7288-43BA-A3A9-F20B407718C0}"
 	ProjectSection(SolutionItems) = preProject

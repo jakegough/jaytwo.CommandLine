@@ -2,16 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace jaytwo.CommandLine.Exceptions
+namespace jaytwo.Subprocess.Exceptions
 {
-    public class CommandTimeoutException : CommandLineException
+    public class TimeoutException : SubprocessException
     {
-        public CommandTimeoutException(CliResult result)
+        public TimeoutException(CliCommandResult result)
             : base(result, GetMessage(result))
         {
         }
 
-        private static string GetMessage(CliResult result)
+        private static string GetMessage(CliCommandResult result)
         {
             return $"Command timed out.\n\nStandard Error: {result.StandardError}\n\nStandard Output: {result.StandardOutput}";
         }

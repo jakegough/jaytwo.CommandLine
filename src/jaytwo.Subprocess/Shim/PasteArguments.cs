@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace jaytwo.CommandLine.Shim
+namespace jaytwo.Subprocess.Shim
 {
     // https://github.com/dotnet/corefx/blob/release/3.0/src/Common/src/CoreLib/System/PasteArguments.cs
 

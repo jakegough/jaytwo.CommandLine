@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace jaytwo.CommandLine.Runtime
+namespace jaytwo.Subprocess.Runtime
 {
     internal class RuntimeInformationProvider
     {

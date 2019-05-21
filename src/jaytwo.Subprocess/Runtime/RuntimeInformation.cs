@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-namespace jaytwo.CommandLine.Runtime
+namespace jaytwo.Subprocess.Runtime
 {
     public class RuntimeInformation
     {

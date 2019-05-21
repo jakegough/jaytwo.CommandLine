@@ -2,18 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using jaytwo.CommandLine.Exceptions;
+using jaytwo.Subprocess.Exceptions;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace jaytwo.CommandLine.UnitTests.Process
+namespace jaytwo.Subprocess.UnitTests
 {
-    public class ProcessRunnerTests
+    public class CliCommandExecutorTests
     {
         private readonly ITestOutputHelper _output;
-        private readonly ICliCommandExecutor _cli = new CliCommandExecutor();
 
-        public ProcessRunnerTests(ITestOutputHelper output)
+        public CliCommandExecutorTests(ITestOutputHelper output)
         {
             _output = output;
         }
@@ -27,7 +26,7 @@ namespace jaytwo.CommandLine.UnitTests.Process
         [InlineData(63)]
         [InlineData(127)]
         [InlineData(255)]
-        public async Task Cli_captures_exit_code(int exitCode)
+        public async Task ExecuteAsync_captures_exit_code(int exitCode)
         {
             // arrange
             var command = new CliCommandBuilder()
@@ -37,7 +36,7 @@ namespace jaytwo.CommandLine.UnitTests.Process
                 .GetCommand();
 
             // act
-            var result = await _cli.RunCommandAsync(command);
+            var result = await command.ExecuteAsync();
 
             // (log)
             _output.WriteLine("Command: {0}", result.Command);
@@ -50,7 +49,7 @@ namespace jaytwo.CommandLine.UnitTests.Process
         }
 
         [Fact]
-        public async Task Cli_processes_input_arguments_and_captures_standard_output()
+        public async Task ExecuteAsync_processes_input_arguments_and_captures_standard_output()
         {
             // arrange
             var message = "hello world";
@@ -62,7 +61,7 @@ namespace jaytwo.CommandLine.UnitTests.Process
                 .GetCommand();
 
             // act
-            var result = await _cli.RunCommandAsync(command);
+            var result = await command.ExecuteAsync();
 
             // (log)
             _output.WriteLine("Command: {0}", result.Command);
@@ -85,7 +84,7 @@ namespace jaytwo.CommandLine.UnitTests.Process
         [InlineData("abc\rdef", "abc[newline]def")]
         [InlineData("`-=~!@#$%^&*()_+", null)]
         [InlineData("[];,./{}|:<>?", null)]
-        public async Task Cli_arguments_work_with_special_characters(string message, string expectedOutput)
+        public async Task ExecuteAsync_with_special_characters(string message, string expectedOutput)
         {
             // arrange
             var messageReadyForConsoleLog = message
@@ -104,7 +103,7 @@ namespace jaytwo.CommandLine.UnitTests.Process
             _output.WriteLine("Command: {0}", command);
 
             // act
-            var result = await _cli.RunCommandAsync(command);
+            var result = await command.ExecuteAsync();
 
             // (log)
             _output.WriteLine("StandardOutput: {0}", result.StandardOutput?.Trim());
@@ -116,7 +115,7 @@ namespace jaytwo.CommandLine.UnitTests.Process
         }
 
         [Fact]
-        public async Task Cli_processes_input_arguments_and_captures_standard_error()
+        public async Task ExecuteAsync_input_arguments_and_captures_standard_error()
         {
             // arrange
             var message = "hello world";
@@ -128,7 +127,7 @@ namespace jaytwo.CommandLine.UnitTests.Process
                 .GetCommand();
 
             // act
-            var result = await _cli.RunCommandAsync(command);
+            var result = await command.ExecuteAsync();
 
             // (log)
             _output.WriteLine("Command: {0}", result.Command);
@@ -144,18 +143,18 @@ namespace jaytwo.CommandLine.UnitTests.Process
         [Theory]
         [InlineData(5000, 100, true)]
         [InlineData(100, 5000, false)]
-        public async Task Cli_processes_timeout(double sleepSeconds, double timeoutSeconds, bool expectedTimedOut)
+        public async Task ExecuteAsync_processes_timeout(double sleepMilliseconds, double timeoutMilliseconds, bool expectedTimedOut)
         {
             // arrange
             var command = new CliCommandBuilder()
                 .WithFileName("node")
                 .WithArgument("-e")
-                .WithArgument("setTimeout(function() {{ console.log('exiting as scheduled...'); process.exit(123); }}, {0});", sleepSeconds)
-                .WithTimeout(TimeSpan.FromMilliseconds(timeoutSeconds))
+                .WithArgument("setTimeout(function() {{ console.log('exiting as scheduled...'); process.exit(123); }}, {0});", sleepMilliseconds)
+                .WithTimeout(TimeSpan.FromMilliseconds(timeoutMilliseconds))
                 .GetCommand();
 
             // act
-            var result = await _cli.RunCommandAsync(command, true);
+            var result = await command.ExecuteAsync(true);
 
             // (log)
             _output.WriteLine("Command: {0}", result.Command);
@@ -165,7 +164,61 @@ namespace jaytwo.CommandLine.UnitTests.Process
             _output.WriteLine("StandardError: {0}", result.StandardError?.Trim());
 
             // assert
-            Assert.Equal(expectedTimedOut, result.Duration.TotalMilliseconds > timeoutSeconds);
+            Assert.Equal(expectedTimedOut, result.Duration.TotalMilliseconds > timeoutMilliseconds);
+            Assert.Equal(expectedTimedOut, result.TimedOut);
+        }
+
+        [Fact]
+        public void Execute_works_non_async()
+        {
+            // arrange
+            var message = "hello world";
+
+            var command = new CliCommandBuilder()
+                .WithFileName("node")
+                .WithArgument("-e")
+                .WithArgument("console.log('{0}')", message)
+                .GetCommand();
+
+            // act
+            var result = command.Execute();
+
+            // (log)
+            _output.WriteLine("Command: {0}", result.Command);
+            _output.WriteLine("ExitCode: {0}", result.ExitCode);
+            _output.WriteLine("StandardOutput: {0}", result.StandardOutput?.Trim());
+            _output.WriteLine("StandardError: {0}", result.StandardError?.Trim());
+
+            // assert
+            Assert.Equal(message, result.StandardOutput?.Trim());
+            Assert.Empty(result.StandardError?.Trim());
+        }
+
+        [Theory]
+        [InlineData(5000, 100, true)]
+        [InlineData(100, 5000, false)]
+        public void Execute_processes_timeout_non_async(double sleepMilliseconds, double timeoutMilliseconds, bool expectedTimedOut)
+        {
+            // arrange
+            var command = new CliCommandBuilder()
+                .WithFileName("node")
+                .WithArgument("-e")
+                .WithArgument("setTimeout(function() {{ console.log('exiting as scheduled...'); process.exit(123); }}, {0});", sleepMilliseconds)
+                .WithTimeout(TimeSpan.FromMilliseconds(timeoutMilliseconds))
+                .GetCommand();
+
+            // act
+            var result = command.Execute(true);
+
+            // (log)
+            _output.WriteLine("Command: {0}", result.Command);
+            _output.WriteLine("ExitCode: {0}", result.ExitCode);
+            _output.WriteLine("Duration: {0:n0}ms", result.Duration.TotalMilliseconds);
+            _output.WriteLine("StandardOutput: {0}", result.StandardOutput?.Trim());
+            _output.WriteLine("StandardError: {0}", result.StandardError?.Trim());
+
+            // assert
+            Assert.Equal(expectedTimedOut, result.Duration.TotalMilliseconds > timeoutMilliseconds);
             Assert.Equal(expectedTimedOut, result.TimedOut);
         }
     }

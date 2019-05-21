@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace jaytwo.CommandLine
+namespace jaytwo.Subprocess
 {
-    public class CliResult
+    public class CliCommandResult
     {
         public CliCommand Command { get; set; }
 

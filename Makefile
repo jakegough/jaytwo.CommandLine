@@ -1,5 +1,5 @@
 TIMESTAMP?=$(shell date +'%Y%m%d%H%M%S')
-DOCKER_TAG?=jaytwo_commandline
+DOCKER_TAG?=jaytwo_subprocess
 
 default: clean build
 
@@ -15,7 +15,7 @@ restore:
 	dotnet restore . --verbosity minimal
 
 build: restore
-	dotnet build ./jaytwo.CommandLine.sln
+	dotnet build ./jaytwo.Subprocess.sln
 
 run:
 	echo "N/A"
@@ -25,10 +25,10 @@ test: unit-test
 unit-test:
 	rm -rf out/testResults
 	rm -rf out/coverage
-	cd ./test/jaytwo.CommandLine.UnitTests; \
+	cd ./test/jaytwo.Subprocess.UnitTests; \
 		dotnet test \
 		--results-directory ../../out/testResults \
-		--logger "trx;LogFileName=jaytwo.CommandLine.UnitTests.trx"
+		--logger "trx;LogFileName=jaytwo.Subprocess.UnitTests.trx"
 	reportgenerator \
 		-reports:./out/coverage/**/coverage.cobertura.xml \
 		-targetdir:./out/coverage/ \
@@ -40,7 +40,7 @@ unit-test:
 
 pack:
 	rm -rf out/packed
-	cd ./src/jaytwo.CommandLine; \
+	cd ./src/jaytwo.Subprocess; \
 		dotnet pack -o ../../out/packed ${PACK_ARG}
 
 pack-beta: PACK_ARG=--version-suffix beta-${TIMESTAMP}
@@ -48,7 +48,7 @@ pack-beta: pack
 
 publish:
 	rm -rf out/published
-	cd ./src/jaytwo.CommandLine; \
+	cd ./src/jaytwo.Subprocess; \
 		dotnet publish -o ../../out/published
 
 DOCKER_BUILDER_TAG?=${DOCKER_TAG}__builder

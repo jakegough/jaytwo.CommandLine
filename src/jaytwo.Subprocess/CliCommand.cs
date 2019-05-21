@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace jaytwo.CommandLine
+namespace jaytwo.Subprocess
 {
     public class CliCommand
     {
-        public IList<string> Arguments { get; } = new List<string>();
+        public string Arguments { get; set; }
 
         public IDictionary<string, string> Environment { get; } = new Dictionary<string, string>();
 

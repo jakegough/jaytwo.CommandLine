@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace jaytwo.CommandLine.Runtime
+namespace jaytwo.Subprocess.Runtime
 {
     public enum OSPlatform
     {

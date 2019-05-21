@@ -4,10 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using jaytwo.CommandLine.Exceptions;
-using jaytwo.CommandLine.Shim;
+using jaytwo.Subprocess.Exceptions;
+using jaytwo.Subprocess.Shim;
 
-namespace jaytwo.CommandLine
+namespace jaytwo.Subprocess
 {
     public class CliCommandExecutor : ICliCommandExecutor
     {
@@ -15,8 +15,28 @@ namespace jaytwo.CommandLine
 
         private static int[] DefaultExpectedExitCodes { get; } = new[] { 0 };
 
+        public CliCommandResult Execute(CliCommand command)
+        {
+            try
+            {
+                // i don't think we will have even a potential a deadlock situation here because it won't actually call any async code
+                return Task.Run(() => InnerExecute(command, false)).Result;
+            }
+            catch (AggregateException ex)
+            {
+                // any exception in the task will be wrapped in an AggregateException, even though we're not calling async code
+                var originalException = ex.Flatten().GetBaseException();
+                throw originalException;
+            }
+        }
+
+        public Task<CliCommandResult> ExecuteAsync(CliCommand command)
+        {
+            return InnerExecute(command, true);
+        }
+
         // with wisdom from https://stackoverflow.com/questions/1145969/processinfo-and-redirectstandardoutput
-        public async Task<CliResult> RunCommandAsync(CliCommand command)
+        private async Task<CliCommandResult> InnerExecute(CliCommand command, bool useAsync)
         {
             var processStartInfo = new ProcessStartInfo();
             processStartInfo.UseShellExecute = false; // false if the process should be created directly from the executable file (must be false for `RedirectStandardOutput = true` and `RedirectStandardError = true`)
@@ -40,7 +60,7 @@ namespace jaytwo.CommandLine
 
             processStartInfo.WorkingDirectory = command.WorkingDirectory;
             processStartInfo.FileName = command.FileName;
-            processStartInfo.Arguments = GetInlineArguments(command.Arguments);
+            processStartInfo.Arguments = command.Arguments;
 
             var standardOutputBuilder = new StringBuilder();
             var standardErrorBuilder = new StringBuilder();
@@ -61,7 +81,16 @@ namespace jaytwo.CommandLine
                 process.BeginOutputReadLine(); // Requires RedirectStandardOutput = true; Begins asynchronous read operations on the redirected System.Diagnostics.Process.StandardOutput stream of the application.
                 process.BeginErrorReadLine(); // Requires RedirectStandardError = true; Begins asynchronous read operations on the redirected System.Diagnostics.Process.StandardError stream of the application.
 
-                await process.WaitForExitAsync(command.Timeout ?? DefaultTimeout);
+                if (useAsync)
+                {
+                    await process.WaitForExitAsync(command.Timeout ?? DefaultTimeout);
+                }
+                else
+                {
+                    var waitForExitMilliseconds = (int)(command.Timeout ?? DefaultTimeout).TotalMilliseconds;
+                    process.WaitForExit(waitForExitMilliseconds);
+                }
+
                 process.Refresh();
                 if (!process.HasExited)
                 {
@@ -83,7 +112,7 @@ namespace jaytwo.CommandLine
                 duration = stopwatch.Elapsed;
             }
 
-            var result = new CliResult();
+            var result = new CliCommandResult();
             result.Command = command;
             result.Duration = duration;
             result.StandardError = standardErrorBuilder.ToString();
@@ -99,7 +128,7 @@ namespace jaytwo.CommandLine
 
             if (result.TimedOut)
             {
-                throw new CommandTimeoutException(result);
+                throw new Exceptions.TimeoutException(result);
             }
 
             if (!result.Success)
@@ -108,21 +137,6 @@ namespace jaytwo.CommandLine
             }
 
             return result;
-        }
-
-        private static string GetInlineArguments(IList<string> argumentList)
-        {
-            var stringBuilder = new StringBuilder();
-
-            if (argumentList != null && argumentList.Count > 0)
-            {
-                foreach (string argument in argumentList)
-                {
-                    PasteArguments.AppendArgument(stringBuilder, argument);
-                }
-            }
-
-            return stringBuilder.ToString();
         }
     }
 }

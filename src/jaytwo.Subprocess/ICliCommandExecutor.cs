@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace jaytwo.CommandLine
+namespace jaytwo.Subprocess
 {
     public interface ICliCommandExecutor
     {
-        Task<CliResult> RunCommandAsync(CliCommand command);
+        CliCommandResult Execute(CliCommand command);
+
+        Task<CliCommandResult> ExecuteAsync(CliCommand command);
     }
 }
