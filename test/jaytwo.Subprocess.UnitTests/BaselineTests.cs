@@ -1,18 +1,15 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using jaytwo.Subprocess.Exceptions;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace jaytwo.Subprocess.UnitTests
 {
-    public class CliCommandExecutorTests
+    public class BaselineTests
     {
         private readonly ITestOutputHelper _output;
 
-        public CliCommandExecutorTests(ITestOutputHelper output)
+        public BaselineTests(ITestOutputHelper output)
         {
             _output = output;
         }
