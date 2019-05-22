@@ -10,21 +10,37 @@ namespace jaytwo.Subprocess
     public class CliCommandBuilder
     {
         public CliCommandBuilder()
-            : this(RuntimeInformation.Current)
+            : this(null, null, RuntimeInformation.Current)
         {
         }
 
-        internal CliCommandBuilder(RuntimeInformation runtimeInfo)
+        public CliCommandBuilder(string fileName)
+            : this(fileName, null, RuntimeInformation.Current)
         {
+        }
+
+        public CliCommandBuilder(string fileName, params string[] initialArguments)
+            : this(fileName, initialArguments, RuntimeInformation.Current)
+        {
+        }
+
+        public CliCommandBuilder(string fileName, params object[] initialArguments)
+            : this(fileName, initialArguments, RuntimeInformation.Current)
+        {
+        }
+
+        internal CliCommandBuilder(string fileName, object[] initialArguments, RuntimeInformation runtimeInfo)
+        {
+            WithFileName(fileName);
+            WithArguments(initialArguments);
             RuntimeInfo = runtimeInfo;
-            EnvironmentVariables = new Dictionary<string, string>();
         }
 
         public RuntimeInformation RuntimeInfo { get; }
 
         public IList<string> Arguments { get; set; } = new List<string>();
 
-        public IDictionary<string, string> EnvironmentVariables { get; }
+        public IDictionary<string, string> EnvironmentVariables { get; } = new Dictionary<string, string>();
 
         public IList<int> ExpectedExitCodes { get; set; }
 
@@ -46,7 +62,7 @@ namespace jaytwo.Subprocess
             return this;
         }
 
-        public CliCommandBuilder WithArguments(params string[] arguments)
+        public CliCommandBuilder WithArguments(object[] arguments)
         {
             foreach (var argument in arguments)
             {
@@ -54,6 +70,21 @@ namespace jaytwo.Subprocess
             }
 
             return this;
+        }
+
+        public CliCommandBuilder WithArguments(string[] arguments)
+        {
+            foreach (var argument in arguments)
+            {
+                WithArgument(argument);
+            }
+
+            return this;
+        }
+
+        public CliCommandBuilder WithArgument(object argument)
+        {
+            return WithArgument(argument?.ToString());
         }
 
         public CliCommandBuilder WithArgument(string argument)

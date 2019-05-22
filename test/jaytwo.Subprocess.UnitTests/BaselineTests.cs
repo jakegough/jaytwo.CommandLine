@@ -26,9 +26,8 @@ namespace jaytwo.Subprocess.UnitTests
         public async Task ExecuteAsync_captures_exit_code(int exitCode)
         {
             // arrange
-            var command = new CliCommandBuilder()
-                .WithFileName("node")
-                .WithArguments("-e", $"process.exit({exitCode})")
+            var command = new CliCommandBuilder("node", "-e")
+                .WithArgument("process.exit({0})", exitCode)
                 .WithExpectedExitCodes(exitCode)
                 .GetCommand();
 
@@ -51,9 +50,7 @@ namespace jaytwo.Subprocess.UnitTests
             // arrange
             var message = "hello world";
 
-            var command = new CliCommandBuilder()
-                .WithFileName("node")
-                .WithArgument("-e")
+            var command = new CliCommandBuilder("node", "-e")
                 .WithArgument("console.log('{0}')", message)
                 .GetCommand();
 
@@ -90,9 +87,7 @@ namespace jaytwo.Subprocess.UnitTests
                 .Replace("\n", @"\n") // we have to pass newlines as strings to be evaluated inside the quotes
                 .Replace("\r", @"\r");
 
-            var command = new CliCommandBuilder()
-                .WithFileName("node")
-                .WithArgument("-e")
+            var command = new CliCommandBuilder("node", "-e")
                 .WithArgument("console.log('{0}')", messageReadyForConsoleLog)
                 .GetCommand();
 
@@ -117,9 +112,7 @@ namespace jaytwo.Subprocess.UnitTests
             // arrange
             var message = "hello world";
 
-            var command = new CliCommandBuilder()
-                .WithFileName("node")
-                .WithArgument("-e")
+            var command = new CliCommandBuilder("node", "-e")
                 .WithArgument("console.error('{0}')", message)
                 .GetCommand();
 
@@ -143,9 +136,7 @@ namespace jaytwo.Subprocess.UnitTests
         public async Task ExecuteAsync_processes_timeout(double sleepMilliseconds, double timeoutMilliseconds, bool expectedTimedOut)
         {
             // arrange
-            var command = new CliCommandBuilder()
-                .WithFileName("node")
-                .WithArgument("-e")
+            var command = new CliCommandBuilder("node", "-e")
                 .WithArgument("setTimeout(function() {{ console.log('exiting as scheduled...'); process.exit(123); }}, {0});", sleepMilliseconds)
                 .WithTimeout(TimeSpan.FromMilliseconds(timeoutMilliseconds))
                 .GetCommand();
@@ -171,9 +162,7 @@ namespace jaytwo.Subprocess.UnitTests
             // arrange
             var message = "hello world";
 
-            var command = new CliCommandBuilder()
-                .WithFileName("node")
-                .WithArgument("-e")
+            var command = new CliCommandBuilder("node", "-e")
                 .WithArgument("console.log('{0}')", message)
                 .GetCommand();
 
@@ -197,9 +186,7 @@ namespace jaytwo.Subprocess.UnitTests
         public void Execute_processes_timeout_non_async(double sleepMilliseconds, double timeoutMilliseconds, bool expectedTimedOut)
         {
             // arrange
-            var command = new CliCommandBuilder()
-                .WithFileName("node")
-                .WithArgument("-e")
+            var command = new CliCommandBuilder("node", "-e")
                 .WithArgument("setTimeout(function() {{ console.log('exiting as scheduled...'); process.exit(123); }}, {0});", sleepMilliseconds)
                 .WithTimeout(TimeSpan.FromMilliseconds(timeoutMilliseconds))
                 .GetCommand();
