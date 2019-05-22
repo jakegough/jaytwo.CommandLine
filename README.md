@@ -48,13 +48,13 @@ There are a few features that you'll probably never use or need... but I needed 
 
 ### Runtime Conditions
 
-Sometimes invoking commands just don't work the same on different platforms.  For example, if my app is developed on Windows but deployed
+Sometimes invoking commands just does't work the same on different platforms.  For example, if my app is developed on Windows but deployed
 to a Linux container, I would like it to work reliably in both places.
 
 The [Yeoman NPM Package](https://www.npmjs.com/package/yo) can be invoked on linux with with `yo` directly, but no such luck on Windows.  
-(Even though it works from a Bash or CMD shell on Windows... if you run `which yo` in bash or `where yo` in CMD, and you'll see that 
+(Even though it works from a Bash or CMD shell on Windows... if you run `which yo` in Bash or `where yo` in CMD, and you'll see that 
 `yo` just points to shortcuts/scripts that the shell knows what  to do with.)  To work around this, we can invoke `yo` from the command 
-interpreter itself on windows `cmd /c yo`.
+interpreter itself on windows with `cmd /c yo`.
 
 ```csharp
 using jaytwo.Subprocess
@@ -71,7 +71,7 @@ var command = new CliCommandBuilder()
     })
     .WithRuntimeCondition(x => x.Platform == Runtime.OSPlatform.Windows, builder =>
     {
-      // specific for Windows platform
+        // specific for Windows platform
         builder.WithFileName("cmd").WithArguments("/C", "yo");
     })
     .GetCommand();
