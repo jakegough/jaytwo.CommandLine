@@ -101,10 +101,10 @@ namespace jaytwo.Subprocess
                     catch
                     {
                     }
-
-                    process.WaitForExit();
-                    stopwatch.Stop();
                 }
+
+                process.WaitForExit();
+                stopwatch.Stop();
 
                 exitCode = process.ExitCode;
                 duration = stopwatch.Elapsed;
