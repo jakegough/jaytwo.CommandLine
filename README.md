@@ -22,9 +22,9 @@ PM> Install-Package jaytwo.subprocess
 It's got a fluent command builder that makes things pretty easy, and its usage should be pretty easy to figure out.
 
 ```csharp
-using jaytwo.Subprocess
+using jaytwo.Subprocess;
 
-...
+// ...
 
 var message = "hello world";
 
@@ -55,9 +55,9 @@ The [Yeoman NPM Package](https://www.npmjs.com/package/yo) can be invoked on lin
 interpreter itself on windows with `cmd /c yo`.
 
 ```csharp
-using jaytwo.Subprocess
+using jaytwo.Subprocess;
 
-...
+// ...
 
 var message = "hello world";
 
