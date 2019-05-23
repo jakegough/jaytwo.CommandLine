@@ -65,7 +65,7 @@ var command = new CliCommandBuilder()
     .WithRuntimeCondition(x => x.Platform != Runtime.OSPlatform.Windows, builder =>
     {
         // specific for non-Windows platforms
-        builder.WithFileName("yo";
+        builder.WithFileName("yo");
     })
     .WithRuntimeCondition(x => x.Platform == Runtime.OSPlatform.Windows, builder =>
     {
