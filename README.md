@@ -28,9 +28,7 @@ using jaytwo.Subprocess
 
 var message = "hello world";
 
-var command = new CliCommandBuilder()
-    .WithFileName("node")
-    .WithArgument("-e")
+var command = new CliCommandBuilder("node", "-e")
     .WithArgument("console.log('{0}')", message)
     .GetCommand();
 
