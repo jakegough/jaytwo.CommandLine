@@ -9,6 +9,6 @@ namespace jaytwo.Subprocess.Runtime
         Unknown = 0,
         Linux = 1,
         Windows = 2,
-        OSX = 3
+        OSX = 3,
     }
 }
