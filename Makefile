@@ -19,7 +19,7 @@ build: restore
 
 test: unit-test
 
-unit-test: build
+unit-test:
 	rm -rf out/testResults
 	rm -rf out/coverage
 	cd ./test/jaytwo.Subprocess.UnitTests; \
