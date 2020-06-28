@@ -8,13 +8,15 @@
     <ProjectReference Include="..\..\src\jaytwo.Subprocess\jaytwo.Subprocess.csproj" />
   </ItemGroup>
 
+  <!-- default test packages -->
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
+    <PackageReference Include="Moq" Version="4.14.4" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.2" PrivateAssets="All" />
-    <PackageReference Include="Moq" Version="4.14.4" />
   </ItemGroup>
-
+  <!-- /default test packages -->
+  
   <!-- stylecop -->
   <ItemGroup>
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" PrivateAssets="All" />
@@ -29,7 +31,7 @@
   </PropertyGroup>
   <!-- /stylecop -->
 
-  <!-- code coverage -->
+  <!-- coverlet & cobertura -->
   <ItemGroup>
     <PackageReference Include="coverlet.msbuild" Version="2.9.0" PrivateAssets="All" />
   </ItemGroup>
@@ -41,6 +43,6 @@
     <CoverletOutputFormat>cobertura</CoverletOutputFormat>
     <CoverletOutput>$(MSBuildThisFileDirectory)../../out/coverage/$(AssemblyName)/$(TargetFramework)/</CoverletOutput>
   </PropertyGroup>
-  <!-- /code coverage -->
+  <!-- /coverlet & cobertura -->
 
 </Project>
