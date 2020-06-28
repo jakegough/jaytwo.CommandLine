@@ -25,7 +25,3 @@ FROM base AS builder
 WORKDIR /build
 COPY . /build
 RUN make deps restore
-
-
-FROM builder AS publisher
-RUN make publish
