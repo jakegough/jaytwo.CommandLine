@@ -13,13 +13,13 @@ clean:
 
 restore:
 	dotnet restore . --verbosity minimal
-
+  
 build: restore
 	dotnet build ./jaytwo.Subprocess.sln
 
 test: unit-test
-
-unit-test:
+  
+unit-test: build
 	rm -rf out/testResults
 	rm -rf out/coverage
 	cd ./test/jaytwo.Subprocess.UnitTests; \
