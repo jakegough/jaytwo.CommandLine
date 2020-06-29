@@ -15,9 +15,6 @@ RUN apt-get update \
   && apt-get autoremove \
   && rm -rf /var/lib/apt/lists/*
 
-# TODO: figure out how to install .net core 1.1 for the tests
-#       https://dotnet.microsoft.com/download/thank-you/dotnet-sdk-1.1.14-linux-ubuntu-16.04-x64-binaries
-
 ENV FrameworkPathOverride /usr/lib/mono/4.5/
 ENV PATH="${PATH}:/root/.dotnet/tools"
 
