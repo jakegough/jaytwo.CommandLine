@@ -10,22 +10,22 @@ namespace jaytwo.Subprocess
     public class CliCommandBuilder
     {
         public CliCommandBuilder()
-            : this(null, null, GetFoo())
+            : this(null, null, RuntimeInformation.Current)
         {
         }
 
         public CliCommandBuilder(string fileName)
-            : this(fileName, null, GetFoo())
+            : this(fileName, null, RuntimeInformation.Current)
         {
         }
 
         public CliCommandBuilder(string fileName, params string[] initialArguments)
-            : this(fileName, initialArguments, GetFoo())
+            : this(fileName, initialArguments, RuntimeInformation.Current)
         {
         }
 
         public CliCommandBuilder(string fileName, params object[] initialArguments)
-            : this(fileName, initialArguments, GetFoo())
+            : this(fileName, initialArguments, RuntimeInformation.Current)
         {
         }
 
@@ -197,11 +197,6 @@ namespace jaytwo.Subprocess
             }
 
             return stringBuilder.ToString();
-        }
-
-        private static RuntimeInformation GetFoo()
-        {
-            return RuntimeInformation.Current;
         }
     }
 }
