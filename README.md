@@ -1,10 +1,17 @@
 # jaytwo.Subprocess
 
 <p align="center">
-  <a href="https://jenkins.jaytwo.com/job/jaytwo.subprocess/job/master/" alt="Build Status (master)">
-    <img src="https://jenkins.jaytwo.com/buildStatus/icon?job=jaytwo.subprocess%2Fmaster&subject=build%20(master)" /></a>
-  <a href="https://jenkins.jaytwo.com/job/jaytwo.subprocess/job/develop/" alt="Build Status (develop)">
-    <img src="https://jenkins.jaytwo.com/buildStatus/icon?job=jaytwo.subprocess%2Fdevelop&subject=build%20(develop)" /></a>
+  <a href="https://jenkins.jaytwo.com/job/jaytwo.Subprocess/job/master/" alt="Build Status (master)">
+    <img src="https://jenkins.jaytwo.com/buildStatus/icon?job=jaytwo.Subprocess%2Fmaster&subject=build%20(master)" /></a>
+  <a href="https://jenkins.jaytwo.com/job/jaytwo.Subprocess/job/develop/" alt="Build Status (develop)">
+    <img src="https://jenkins.jaytwo.com/buildStatus/icon?job=jaytwo.Subprocess%2Fdevelop&subject=build%20(develop)" /></a>
+</p>
+
+<p align="center">
+  <a href="https://www.nuget.org/packages/jaytwo.Subprocess/" alt="NuGet Package jaytwo.Subprocess">
+    <img src="https://img.shields.io/nuget/v/jaytwo.Subprocess.svg?logo=nuget&label=jaytwo.Subprocess" /></a>
+  <a href="https://www.nuget.org/packages/jaytwo.Subprocess/" alt="NuGet Package jaytwo.Subprocess (beta)">
+    <img src="https://img.shields.io/nuget/vpre/jaytwo.Subprocess.svg?logo=nuget&label=jaytwo.Subprocess" /></a>
 </p>
 
 A simplified way to invoke external processes in .NET
